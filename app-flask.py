@@ -33,14 +33,8 @@ app.wsgi_app = ReverseProxied(app.wsgi_app)
 
 # Homepage which uses a template file
 @app.route('/')
-def index_page():from domino.datasets import DatasetClient
-
-# instantiate a client and fetch the dataset
-dataset = DatasetClient().getDataset("dataset-AppDatasets-67eb46120aa8e17a5ffc1ff0")
-
-# list files in the dataset
-dataset.list_files()
-  return flask.render_template("index.html")
+def index_page():
+  return "hello from your flask app"
 
 # Sample redirect using url_for
 @app.route('/redirect_test')
