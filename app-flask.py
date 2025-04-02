@@ -51,8 +51,12 @@ def another_page():
 @app.route('/random')
 @app.route('/random/<int:n>')
 def random(n = 100):
-  random_numbers = list(np.random.random(n))
-  return json.dumps(random_numbers)
+    try:
+        random_numbers = list(np.random.random(n))
+        return json.dumps(random_numbers)
+    except Exception as e:
+        app.logger.error(f"Error in random route: {e}")
+        return f"Error generating random numbers: {e}", 500
 
 @app.route('/datasets')
 def datasets():
@@ -61,3 +65,6 @@ def datasets():
 
   # list files in the dataset
   return json.dumps(dataset.list_files())
+
+if __name__ == '__main__':
+    app.run(debug=True, host='0.0.0.0')
