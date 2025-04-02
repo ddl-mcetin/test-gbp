@@ -34,7 +34,7 @@ app.wsgi_app = ReverseProxied(app.wsgi_app)
 # Homepage which uses a template file
 @app.route('/')
 def index_page():
-  return "hello from your flask app"
+  return "hello world"
 
 # Sample redirect using url_for
 @app.route('/redirect_test')
