@@ -60,4 +60,4 @@ def datasets():
   dataset = DatasetClient(token = request.headers['Authorization']).get_dataset("dataset-AppDatasets-67eb46120aa8e17a5ffc1ff0")
 
   # list files in the dataset
-  return dataset.list_files()
+  return json.dumps(dataset.list_files())
