@@ -48,13 +48,13 @@ def another_page():
         "A call to flask's url_for('index_page') returns " + url_for('index_page') + "."
   return msg
 
-@app.route("/random")
-@app.route("/random/<int:n>")
+@app.route('/random')
+@app.route('/random/<int:n>')
 def random(n = 100):
   random_numbers = list(np.random.random(n))
   return json.dumps(random_numbers)
 
-@app.route("/datasets")
+@app.route('/datasets')
 def datasets():
   # instantiate a client and fetch the dataset
   dataset = DatasetClient(token = request.headers['Authorization']).get_dataset("dataset-AppDatasets-67eb46120aa8e17a5ffc1ff0")
