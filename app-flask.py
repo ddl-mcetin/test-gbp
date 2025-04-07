@@ -60,11 +60,20 @@ def random(n = 100):
 
 @app.route('/datasets')
 def datasets():
-  # instantiate a client and fetch the dataset
-  dataset = DatasetClient(token = request.headers['Authorization']).get_dataset("dataset-AppDatasets-67eb46120aa8e17a5ffc1ff0")
+    # Extract the Authorization header
+    auth_header = request.headers.get('Authorization', None)
 
-  # list files in the dataset
-  return json.dumps(dataset.list_files())
+    # If it’s a Bearer token, strip off "Bearer "
+    if auth_header and auth_header.startswith("Bearer "):
+        token = auth_header[len("Bearer "):]
+    else:
+        token = auth_header  # or handle error if token is missing
+
+    # Instantiate a client with the raw token
+    dataset = DatasetClient(token=token).get_dataset("dataset-AppDatasets-67eb46120aa8e17a5ffc1ff0")
+
+    # Return the list of files
+    return json.dumps(dataset.list_files())
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')
