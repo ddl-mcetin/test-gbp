@@ -82,6 +82,7 @@ def datasets():
             "last_modified": str(f.last_modified)
         }
         for f in file_objects
+    ]
 
     # Return as JSON
     return jsonify(file_list)
