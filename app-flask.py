@@ -6,7 +6,7 @@ import subprocess
 
 import json
 import flask
-from flask import request, redirect, url_for
+from flask import request, redirect, url_for, jsonify
 import numpy as np
 from domino_data.datasets import DatasetClient
 
