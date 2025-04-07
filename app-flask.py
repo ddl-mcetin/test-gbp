@@ -60,32 +60,32 @@ def random(n = 100):
 
 @app.route('/datasets')
 def datasets():
-    # Extract token from header
     auth_header = request.headers.get('Authorization', None)
     if auth_header and auth_header.startswith("Bearer "):
         token = auth_header[len("Bearer "):]
     else:
-        token = auth_header
+        return jsonify({"error": "Missing or invalid Authorization header"}), 401
 
-    # Fetch dataset
-    dataset = DatasetClient(token=token).get_dataset("dataset-AppDatasets-67eb46120aa8e17a5ffc1ff0")
-    
-    # List the files (which returns a list of custom file objects)
-    file_objects = dataset.list_files()
-
-    # Convert each file object to a dictionary or some JSON-serializable form
-    # Adjust the attributes according to what your file object exposes.
-    file_list = [
-        {
-            "path": f.path,
-            "size": f.size,
-            "last_modified": str(f.last_modified)
-        }
-        for f in file_objects
-    ]
-
-    # Return as JSON
-    return jsonify(file_list)
+    try:
+        dataset = DatasetClient(token=token).get_dataset("dataset-AppDatasets-67eb46120aa8e17a5ffc1ff0")
+        file_objects = dataset.list_files()
+        
+        # Convert custom file objects to dicts (adjust fields as needed)
+        file_list = [
+            {
+                "path": f.path,
+                "size": f.size,
+                "last_modified": str(f.last_modified)
+            }
+            for f in file_objects
+        ]
+        
+        return jsonify(file_list)
+    except Exception as e:
+        # Log the error as needed
+        app.logger.error("Error accessing dataset: %s", e)
+        return jsonify({"error": "Access denied. " 
+                        "Please ensure your credentials have the required permissions."}), 403
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')
