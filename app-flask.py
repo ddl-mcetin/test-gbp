@@ -60,28 +60,59 @@ def random(n = 100):
 
 @app.route('/datasets')
 def datasets():
+    # Get the authorization header
+    auth_header = request.headers.get('Authorization', '')
+    
+    # Improved token extraction with better validation
+    if not auth_header or not auth_header.startswith("Bearer "):
+        return jsonify({"error": "Missing or invalid Authorization header. Please provide a valid Bearer token."}), 401
+    
+    # Extract token
+    token = auth_header[len("Bearer "):].strip()
+    if not token:
+        return jsonify({"error": "Empty token provided"}), 401
+    
     try:
-        # instantiate a client and fetch the dataset
-        dataset = DatasetClient(token = request.headers['Authorization']).get_dataset("dataset-gbp-67eb76766894fa2dac0c2dc6")
-
+        # Create client with explicit error handling
+        client = DatasetClient(token=token)
+        
+        # Set a timeout for the request
+        dataset = client.get_dataset("dataset-AppDatasets-67eb46120aa8e17a5ffc1ff0", timeout=30)
         file_objects = dataset.list_files()
         
-        # Convert custom file objects to dicts (adjust fields as needed)
-        file_list = [
-            {
-                "path": f.path,
-                "size": f.size,
-                "last_modified": str(f.last_modified)
-            }
-            for f in file_objects
-        ]
+        # More comprehensive file object processing with error checking
+        file_list = []
+        for f in file_objects:
+            try:
+                file_info = {
+                    "path": f.path,
+                    "size": f.size,
+                    "last_modified": str(f.last_modified),
+                    "type": getattr(f, "type", "unknown")  # Safely get additional attributes
+                }
+                file_list.append(file_info)
+            except AttributeError as attr_err:
+                app.logger.warning(f"Skipping file with missing attributes: {attr_err}")
         
         return jsonify(file_list)
+    
+    except jwt.InvalidTokenError as jwt_err:
+        # Specific handling for JWT token errors
+        app.logger.error(f"JWT token validation error: {jwt_err}")
+        return jsonify({"error": "Invalid authentication token"}), 401
+        
+    except ConnectionError as conn_err:
+        # Handle connection problems
+        app.logger.error(f"Connection error accessing dataset: {conn_err}")
+        return jsonify({"error": "Unable to connect to dataset service"}), 503
+        
     except Exception as e:
-        # Log the error as needed
-        app.logger.error("Error accessing dataset: %s", e)
-        return jsonify({"error": "Access denied. " 
-                        "Please ensure your credentials have the required permissions."}), 403
-
+        # Improved error logging with traceback
+        app.logger.error(f"Error accessing dataset: {e}", exc_info=True)
+        
+        # Don't reveal specific error details to client
+        return jsonify({
+            "error": "Access denied or server error. Please ensure your credentials have the required permissions."
+        }), 403
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')
