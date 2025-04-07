@@ -60,14 +60,10 @@ def random(n = 100):
 
 @app.route('/datasets')
 def datasets():
-    auth_header = request.headers.get('Authorization', None)
-    if auth_header and auth_header.startswith("Bearer "):
-        token = auth_header[len("Bearer "):]
-    else:
-        return jsonify({"error": "Missing or invalid Authorization header"}), 401
-
     try:
-        dataset = DatasetClient(token=token).get_dataset("dataset-AppDatasets-67eb46120aa8e17a5ffc1ff0")
+        # instantiate a client and fetch the dataset
+        dataset = DatasetClient(token = request.headers['Authorization']).get_dataset("dataset-gbp-67eb76766894fa2dac0c2dc6")
+
         file_objects = dataset.list_files()
         
         # Convert custom file objects to dicts (adjust fields as needed)
