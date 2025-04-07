@@ -76,8 +76,8 @@ def datasets():
         # Create client with explicit error handling
         client = DatasetClient(token=token)
         
-        # Set a timeout for the request
-        dataset = client.get_dataset("dataset-AppDatasets-67eb46120aa8e17a5ffc1ff0", timeout=30)
+        # Get dataset (without timeout parameter)
+        dataset = client.get_dataset("dataset-AppDatasets-67eb46120aa8e17a5ffc1ff0")
         file_objects = dataset.list_files()
         
         # More comprehensive file object processing with error checking
@@ -96,9 +96,9 @@ def datasets():
         
         return jsonify(file_list)
     
-    except jwt.InvalidTokenError as jwt_err:
-        # Specific handling for JWT token errors
-        app.logger.error(f"JWT token validation error: {jwt_err}")
+    except ValueError as val_err:
+        # Handle token validation errors
+        app.logger.error(f"Token validation error: {val_err}")
         return jsonify({"error": "Invalid authentication token"}), 401
         
     except ConnectionError as conn_err:
@@ -114,5 +114,6 @@ def datasets():
         return jsonify({
             "error": "Access denied or server error. Please ensure your credentials have the required permissions."
         }), 403
+
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')
