@@ -77,7 +77,7 @@ def datasets():
         client = DatasetClient(token=token)
         
         # Get dataset (without timeout parameter)
-        dataset = client.get_dataset("dataset-AppDatasets-67eb46120aa8e17a5ffc1ff0")
+        dataset = client.get_dataset("dataset-gbp-67eb76766894fa2dac0c2dc6")
         file_objects = dataset.list_files()
         
         # More comprehensive file object processing with error checking
