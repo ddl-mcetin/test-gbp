@@ -81,19 +81,8 @@ def datasets():
         file_objects = dataset.list_files()
         
         # More comprehensive file object processing with error checking
-        file_list = []
-        for f in file_objects:
-            try:
-                file_info = {
-                    "path": f.path,
-                    "size": f.size,
-                    "last_modified": str(f.last_modified),
-                    "type": getattr(f, "type", "unknown")  # Safely get additional attributes
-                }
-                file_list.append(file_info)
-            except AttributeError as attr_err:
-                app.logger.warning(f"Skipping file with missing attributes: {attr_err}")
-        
+        file_list = [f.name for f in file_objects]
+     
         return jsonify(file_list)
     
     except ValueError as val_err:
