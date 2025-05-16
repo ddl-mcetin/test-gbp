@@ -18,7 +18,7 @@ output = f"{timestamp}: {', '.join(map(str, random_numbers))}\n"
 
 # Define the results directory path
 # Standard path for Domino job results
-results_dir = "/mnt/results"
+results_dir = "/mnt/artifacts/results"
 
 # Create the results directory if it doesn't exist
 # Domino usually creates this, but it's good practice to ensure it exists.
