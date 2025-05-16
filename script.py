@@ -2,6 +2,7 @@
 import time
 import random
 from datetime import datetime
+import os # Added import
 
 # Wait for 5 seconds
 time.sleep(5)
@@ -15,8 +16,19 @@ timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 # Prepare output with timestamp
 output = f"{timestamp}: {', '.join(map(str, random_numbers))}\n"
 
-# Append to output.txt if it exists, otherwise create it
-with open("output.txt", "a") as file:
+# Define the results directory path
+# Standard path for Domino job results
+results_dir = "/mnt/results"
+
+# Create the results directory if it doesn't exist
+# Domino usually creates this, but it's good practice to ensure it exists.
+os.makedirs(results_dir, exist_ok=True)
+
+# Construct the full path for the output file
+output_file_path = os.path.join(results_dir, "output.txt")
+
+# Append to output.txt in the results directory
+with open(output_file_path, "a") as file:
     file.write(output)
 
-print(f"Added random numbers to output.txt: {', '.join(map(str, random_numbers))}")
+print(f"Added random numbers to {output_file_path}: {', '.join(map(str, random_numbers))}")
