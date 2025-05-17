@@ -25,7 +25,7 @@ results_dir = "/mnt/artifacts/results"
 os.makedirs(results_dir, exist_ok=True)
 
 # Construct the full path for the output file
-output_file_path = os.path.join(results_dir, "output.txt")
+output_file_path = os.path.join(results_dir, "output2.txt")
 
 # Append to output.txt in the results directory
 with open(output_file_path, "a") as file:
