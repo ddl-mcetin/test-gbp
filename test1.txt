@@ -1,1 +1,1 @@
-this is a conflict..
+is this a conflict?
