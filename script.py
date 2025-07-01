@@ -4,8 +4,8 @@ import random
 from datetime import datetime
 import os # Added import
 
-# Wait for 5 seconds
-time.sleep(5)
+# Wait for 30 seconds
+time.sleep(30)
 
 # Generate 5 random numbers
 random_numbers = [random.randint(1, 100) for _ in range(5)]
